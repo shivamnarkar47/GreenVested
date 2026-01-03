@@ -15,21 +15,27 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
     const steps = duration / interval
     const increment = 100 / steps
 
-    const timer = setInterval(() => {
-      setProgress(prev => {
-        const next = prev + increment
-        if (next >= 100) {
-          clearInterval(timer)
-          setTimeout(onComplete, 300)
-          return 100
-        }
-        return next
-      })
-    }, interval)
+    const startTimeout = setTimeout(() => {
+      const timer = setInterval(() => {
+        setProgress(prev => {
+          const next = prev + increment
+          if (next >= 100) {
+            clearInterval(timer)
+            setTimeout(onComplete, 300)
+            return 100
+          }
+          return next
+        })
+      }, interval)
 
-    setTimeout(() => setShowText(true), 500)
+      return () => clearInterval(timer)
+    }, 100)
 
-    return () => clearInterval(timer)
+    setTimeout(() => setShowText(true), 600)
+
+    return () => {
+      clearTimeout(startTimeout)
+    }
   }, [onComplete])
 
   return (
@@ -54,7 +60,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
               strokeWidth="8"
               fill="none"
               strokeDasharray={`${progress * 3.52} 352`}
-              className="text-emerald-500 transition-all duration-75"
+              className="text-emerald-500 transition-all duration-30 ease-linear"
               strokeLinecap="round"
             />
           </svg>
@@ -77,7 +83,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
       <div className="mt-12 w-64 h-1 bg-muted rounded-full overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 transition-all duration-75"
+          className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 transition-all duration-30 ease-linear"
           style={{ width: `${progress}%` }}
         />
       </div>

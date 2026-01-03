@@ -25,16 +25,10 @@ function App() {
   const [showLoading, setShowLoading] = useState(true)
 
   useEffect(() => {
-    const hasSeenLoading = sessionStorage.getItem('hasSeenLoading')
-    if (hasSeenLoading) {
+    const timer = setTimeout(() => {
       setShowLoading(false)
-    } else {
-      const timer = setTimeout(() => {
-        sessionStorage.setItem('hasSeenLoading', 'true')
-        setShowLoading(false)
-      }, 6000)
-      return () => clearTimeout(timer)
-    }
+    }, 6000)
+    return () => clearTimeout(timer)
   }, [])
 
   if (showLoading) {
