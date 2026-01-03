@@ -1,0 +1,4 @@
+backend/.env
+frontend/src/lib/api.ts
+*.log
+*.db
