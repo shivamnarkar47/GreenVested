@@ -24,15 +24,27 @@ cp .env.example .env
 ```
 
 4. Run the server:
+
+**Development:**
 ```bash
 uvicorn app.main:app --reload
 ```
 
+**Production (Gunicorn):**
+```bash
+gunicorn --workers 1 --bind :8080 --timeout 600 --worker-class uvicorn.workers.UvicornWorker app:application
+```
+
+Or using config file:
+```bash
+gunicorn -c gunicorn.conf.py app:application
+```
+
 ## API Documentation
 
-Open http://localhost:8000/docs for Swagger UI.
+Open http://localhost:8080/docs for Swagger UI.
 
 ## Database
 
-The platform uses SQLite for local development. 
+The platform uses SQLite for local development.
 For production, configure PostgreSQL in DATABASE_URL.
