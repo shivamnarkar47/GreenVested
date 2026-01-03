@@ -15,7 +15,7 @@
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 1. [Overview](#-overview)
 2. [Features](#-features)
@@ -31,7 +31,7 @@
 
 ---
 
-## 🌿 Overview
+## Overview
 
 GreenVested is a full-stack ESG (Environmental, Social, Governance) investing platform designed for the Indian stock market (BSE). It provides:
 
@@ -49,7 +49,7 @@ GreenVested is a full-stack ESG (Environmental, Social, Governance) investing pl
 
 ---
 
-## ✨ Features
+## Features
 
 ### Core Features
 
@@ -71,7 +71,7 @@ GreenVested is a full-stack ESG (Environmental, Social, Governance) investing pl
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ### High-Level Architecture
 
@@ -192,7 +192,7 @@ flowchart TB
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ESG_Scores/
@@ -256,7 +256,7 @@ ESG_Scores/
 
 ---
 
-## 🔄 User Flow
+## User Flow
 
 ### Anonymous User Flow
 
@@ -338,7 +338,7 @@ flowchart LR
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 ### Frontend
 
@@ -384,7 +384,7 @@ flowchart LR
 
 ---
 
-## 📡 API Documentation
+## API Documentation
 
 ### Authentication Endpoints
 
@@ -486,7 +486,7 @@ erDiagram
 
 ---
 
-## 🗄️ Database Schema
+## Database Schema
 
 ### Complete Entity Relationship
 
@@ -551,7 +551,7 @@ erDiagram
 
 ---
 
-## 🤖 ML Models
+## ML Models
 
 ### ESG Scoring Model
 
@@ -619,7 +619,7 @@ flowchart LR
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -666,7 +666,7 @@ pnpm run dev
 
 ---
 
-## 🔐 Environment Variables
+## Environment Variables
 
 ### Backend (.env)
 
@@ -696,7 +696,7 @@ VITE_API_URL=http://localhost:8000
 
 ---
 
-## 📊 Key Features Explained
+## Key Features Explained
 
 ### Monte Carlo Simulation
 
@@ -727,7 +727,7 @@ For beginners, the platform provides educational content explaining:
 
 ---
 
-## 🔮 Future Enhancements
+## Future Enhancements
 
 - [ ] Real-time stock data integration
 - [ ] Social login (Google, GitHub)
@@ -739,13 +739,13 @@ For beginners, the platform provides educational content explaining:
 
 ---
 
-## 📄 License
+## License
 
 MIT License - feel free to use for learning and production.
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - [FastAPI](https://fastapi.tiangolo.com/) - Modern Python web framework
 - [React](https://react.dev/) - UI library
@@ -758,7 +758,7 @@ MIT License - feel free to use for learning and production.
 
 <div align="center">
 
-**Built with 💚 for sustainable investing**
+**Built with love for sustainable investing**
 
 *GreenVested - Invest in a Sustainable Future*
 
