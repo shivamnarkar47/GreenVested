@@ -14,7 +14,8 @@ source venv/bin/activate  # Linux/Mac
 
 2. Install dependencies:
 ```bash
-pip install -r requirements.txt
+pip install uv
+uv pip install -r pyproject.toml
 ```
 
 3. Create .env file:
