@@ -28,8 +28,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto flex h-14 md:h-16 items-center justify-between px-4">
+      <header className="sticky  top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex h-14 md:h-16 items-center justify-between px-4">
           <Link to="/" className="flex items-center gap-2 font-bold text-lg">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
               <Leaf className="h-5 w-5 text-white" />
@@ -91,51 +91,49 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden border-t bg-background">
-            <nav className="container mx-auto px-4 py-4 space-y-2">
-              {navItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                    location.pathname === item.path 
-                      ? 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30' 
-                      : 'text-muted-foreground hover:bg-muted'
-                  }`}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <item.icon className="h-5 w-5" />
-                  {item.label}
+          <div className="md:hidden border-t bg-background px-4 py-4 space-y-2">
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                  location.pathname === item.path 
+                    ? 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30' 
+                    : 'text-muted-foreground hover:bg-muted'
+                }`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <item.icon className="h-5 w-5" />
+                {item.label}
+              </Link>
+            ))}
+            <div className="pt-2 border-t space-y-2">
+              {user ? (
+                <>
+                  <div className="px-4 py-2 text-sm text-muted-foreground">
+                    {user.email}
+                  </div>
+                  <Button variant="outline" className="w-full justify-start" onClick={handleLogout}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
+                  <Button className="w-full">Sign In</Button>
                 </Link>
-              ))}
-              <div className="pt-2 border-t space-y-2">
-                {user ? (
-                  <>
-                    <div className="px-4 py-2 text-sm text-muted-foreground">
-                      {user.email}
-                    </div>
-                    <Button variant="outline" className="w-full justify-start" onClick={handleLogout}>
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Logout
-                    </Button>
-                  </>
-                ) : (
-                  <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
-                    <Button className="w-full">Sign In</Button>
-                  </Link>
-                )}
-              </div>
-            </nav>
+              )}
+            </div>
           </div>
         )}
       </header>
 
-      <main className="flex-1 container mx-auto px-4 py-6 md:py-8">
+      <main className="flex-1 px-4 py-6 md:py-8  max-w-7xl mx-auto">
         {children}
       </main>
 
-      <footer className="border-t py-6 md:py-8 mt-auto">
-        <div className="container mx-auto px-4">
+      <footer className="border-t py-6 md:py-8 mt-auto px-4">
+        <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
             <div>
               <p className="font-semibold text-foreground">GreenVested</p>

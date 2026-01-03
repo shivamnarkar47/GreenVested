@@ -13,7 +13,8 @@ interface ESGChartsProps {
 
 const CustomTooltip = ({ active, payload, label, unit = '' }: any) => {
   if (active && payload && payload.length) {
-    const value = payload[0].value
+    const rawValue = payload[0].value
+    const value = rawValue * 100
     const isPositive = value >= 0
     return (
       <div className="bg-popover border border-border/50 rounded-lg shadow-xl p-3 backdrop-blur-md">
@@ -25,6 +26,52 @@ const CustomTooltip = ({ active, payload, label, unit = '' }: any) => {
     )
   }
   return null
+}
+
+export function MonteCarloChart({ data }: { data: number[] }) {
+  const chartData = data.map((value, index) => ({
+    day: index,
+    return: value
+  }))
+
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
+        <defs>
+          <linearGradient id="monteCarloGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
+            <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" vertical={false} />
+        <XAxis 
+          dataKey="day" 
+          className="text-muted-foreground"
+          tick={{ fontSize: 10 }}
+          tickLine={false}
+          axisLine={false}
+          interval="preserveStartEnd"
+          tickFormatter={(value) => value % 50 === 0 ? `Day ${value}` : ''}
+        />
+        <YAxis 
+          className="text-muted-foreground"
+          tick={{ fontSize: 10 }}
+          tickLine={false}
+          axisLine={false}
+          tickFormatter={(v) => `${(v * 100).toFixed(0)}%`}
+          width={35}
+        />
+        <Tooltip content={<CustomTooltip unit="%" />} />
+        <Area
+          type="monotone"
+          dataKey="return"
+          stroke="#10b981"
+          strokeWidth={2}
+          fill="url(#monteCarloGradient)"
+        />
+      </AreaChart>
+    </ResponsiveContainer>
+  )
 }
 
 export function ESGComparisonChart({ data }: { data: { name: string; ESG: number; E: number; S: number; G: number }[] }) {
@@ -131,36 +178,5 @@ export function ScoreBreakdown({ eScore, sScore, gScore }: Omit<ESGChartsProps, 
         </PieChart>
       </ResponsiveContainer>
     </div>
-  )
-}
-
-export function MonteCarloChart({ data }: { data: number[] }) {
-  const chartData = data.map((value, index) => ({
-    day: index,
-    return: value
-  }))
-
-  return (
-    <ResponsiveContainer width="100%" height={300}>
-      <AreaChart data={chartData}>
-        <defs>
-          <linearGradient id="monteCarloGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
-            <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-          </linearGradient>
-        </defs>
-        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-        <XAxis dataKey="day" className="text-muted-foreground" />
-        <YAxis className="text-muted-foreground" tickFormatter={(v) => `${v.toFixed(1)}%`} />
-        <Tooltip content={<CustomTooltip unit="%" />} />
-        <Area
-          type="monotone"
-          dataKey="return"
-          stroke="#10b981"
-          strokeWidth={2}
-          fill="url(#monteCarloGradient)"
-        />
-      </AreaChart>
-    </ResponsiveContainer>
   )
 }
