@@ -74,9 +74,67 @@ export const api = {
     const { data } = await apiClient.post('/portfolio/analyze', holdings)
     return data
   },
-  
+
+  // Portfolio CRUD APIs
+  getPortfolios: async () => {
+    const { data } = await apiClient.get('/portfolios')
+    return data
+  },
+
+  createPortfolio: async (portfolio: any) => {
+    const { data } = await apiClient.post('/portfolios', portfolio)
+    return data
+  },
+
+  getPortfolio: async (id: number) => {
+    const { data } = await apiClient.get(`/portfolios/${id}`)
+    return data
+  },
+
+  updatePortfolio: async (id: number, portfolio: any) => {
+    const { data } = await apiClient.put(`/portfolios/${id}`, portfolio)
+    return data
+  },
+
+  deletePortfolio: async (id: number) => {
+    const { data } = await apiClient.delete(`/portfolios/${id}`)
+    return data
+  },
+
   healthCheck: async () => {
     const { data } = await apiClient.get('/health')
+    return data
+  },
+
+  // GIS APIs
+  getGISStates: async () => {
+    const { data } = await apiClient.get('/gis/states')
+    return data
+  },
+
+  getGISHeatmap: async () => {
+    const { data } = await apiClient.get('/gis/heatmap')
+    return data
+  },
+
+  getGISCompanyLocations: async () => {
+    const { data } = await apiClient.get('/gis/companies/location')
+    return data
+  },
+
+  getGISEnvironmentalData: async (state: string) => {
+    const { data } = await apiClient.get(`/gis/environmental/${state}`)
+    return data
+  },
+
+  getGISClimateRiskZones: async (state?: string) => {
+    const params = state ? `?state=${state}` : ''
+    const { data } = await apiClient.get(`/gis/climate-risk${params}`)
+    return data
+  },
+
+  getGISRegionalComparison: async () => {
+    const { data } = await apiClient.get('/gis/regional-comparison')
     return data
   }
 }

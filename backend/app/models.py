@@ -44,6 +44,9 @@ class Company(Base):
     headquarters = Column(String(200))
     website = Column(String(500))
     description = Column(Text)
+    state = Column(String(100), index=True)
+    latitude = Column(Float)
+    longitude = Column(Float)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -104,3 +107,32 @@ class PortfolioItem(Base):
 
     portfolio = relationship("Portfolio", back_populates="items")
     company = relationship("Company", back_populates="portfolio_items")
+
+
+class EnvironmentalData(Base):
+    __tablename__ = "environmental_data"
+
+    id = Column(Integer, primary_key=True, index=True)
+    state = Column(String(100), index=True, nullable=False)
+    aqi = Column(Integer)
+    pm25 = Column(Float)
+    pm10 = Column(Float)
+    temperature = Column(Float)
+    humidity = Column(Float)
+    rainfall = Column(Float)
+    recorded_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class ClimateRiskZone(Base):
+    __tablename__ = "climate_risk_zones"
+
+    id = Column(Integer, primary_key=True, index=True)
+    state = Column(String(100), index=True, nullable=False)
+    risk_type = Column(String(50), index=True)
+    risk_level = Column(String(20), index=True)
+    description = Column(Text)
+    affected_districts = Column(JSON)
+    mitigation_score = Column(Float)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

@@ -633,18 +633,34 @@ flowchart LR
 # 1. Clone and navigate
 cd ESG_Scores
 
-# 2. Run installation script
-chmod +x install.sh
-./install.sh
+# 2. Make scripts executable
+chmod +x run.sh stop.sh status.sh
 
 # 3. Start development servers
 ./run.sh
 
 # 4. Open in browser
-# Frontend: http://localhost:5173
+# Frontend: http://localhost:5173 (or 5174)
 # Backend:  http://localhost:8000
 # API Docs: http://localhost:8000/docs
 ```
+
+### Development Scripts
+
+The project includes enhanced management scripts:
+
+```bash
+./run.sh      # Start both frontend and backend servers
+./stop.sh     # Stop all running servers cleanly
+./status.sh   # Check server status and health
+```
+
+**Features:**
+- Automatic dependency installation
+- Health checks for both services
+- Graceful shutdown handling
+- Process monitoring and cleanup
+- Cross-platform compatibility
 
 ### Manual Installation
 

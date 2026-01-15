@@ -180,6 +180,76 @@ class AnalysisResponse(BaseModel):
     message: str
 
 
+# GIS Schemas
+class StateESGAggregate(BaseModel):
+    state: str
+    company_count: int
+    avg_esg_score: float
+    avg_e_score: float
+    avg_s_score: float
+    avg_g_score: float
+    top_company: Optional[str] = None
+    lowest_company: Optional[str] = None
+
+
+class HeatmapDataPoint(BaseModel):
+    state: str
+    esg_score: float
+    e_score: float
+    s_score: float
+    g_score: float
+    company_count: int
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+
+
+class CompanyLocation(BaseModel):
+    bse_code: str
+    company_name: str
+    sector: Optional[str] = None
+    esg_score: Optional[float] = None
+    latitude: float
+    longitude: float
+    state: str
+
+
+class RegionalComparison(BaseModel):
+    state: str
+    esg_score: float
+    national_avg: float
+    deviation: float
+    rank: int
+    total_states: int
+
+
+class EnvironmentalDataResponse(BaseModel):
+    id: int
+    state: str
+    aqi: Optional[int] = None
+    pm25: Optional[float] = None
+    pm10: Optional[float] = None
+    temperature: Optional[float] = None
+    humidity: Optional[float] = None
+    rainfall: Optional[float] = None
+    recorded_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class ClimateRiskZoneResponse(BaseModel):
+    id: int
+    state: str
+    risk_type: str
+    risk_level: str
+    description: Optional[str] = None
+    affected_districts: Optional[List[str]] = None
+    mitigation_score: Optional[float] = None
+
+    class Config:
+        from_attributes = True
+
+
 # Health
 class HealthResponse(BaseModel):
     status: str

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { DarkModeToggle } from '@/components/DarkModeToggle'
 import {
   PieChart, LogOut, Menu, X,
-  Leaf, TrendingUp, Globe
+  Leaf, TrendingUp, Globe, MapPin
 } from 'lucide-react'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -17,6 +17,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const navItems = [
     { path: '/', label: 'Home', icon: Globe },
     { path: '/dashboard', label: 'Leaderboard', icon: TrendingUp },
+    { path: '/geographic', label: 'Map View', icon: MapPin },
     { path: '/portfolio', label: 'Portfolio', icon: PieChart },
   ]
 
@@ -68,14 +69,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   <span className="hidden lg:inline">Logout</span>
                 </Button>
               </div>
-            ) : (
-              <Link to="/auth">
-                <Button size="sm" className="text-xs lg:text-sm">
-                  <span className="hidden sm:inline">Sign In</span>
-                  <span className="sm:hidden">Sign In</span>
-                </Button>
-              </Link>
-            )}
+            ) : <div></div>}
           </div>
 
           <div className="flex items-center gap-2 md:hidden">

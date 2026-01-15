@@ -1,12 +1,14 @@
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/lib/api'
+import { useAuth } from '@/context/AuthContext'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
 import { MonteCarloChart } from '@/components/Charts'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
-import { Plus, Trash2, TrendingUp, RefreshCw, AlertCircle, ChevronDown, ChevronUp, BookOpen } from 'lucide-react'
+import { Plus, Trash2, TrendingUp, RefreshCw, AlertCircle, ChevronDown, ChevronUp, BookOpen, Save, FolderOpen } from 'lucide-react'
 
 const COLORS = ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b']
 
@@ -42,9 +44,57 @@ function StatBox({ label, value, color = 'text-foreground' }: { label: string; v
 }
 
 export default function Portfolio() {
+  const { user } = useAuth()
+  const queryClient = useQueryClient()
+
   const [holdings, setHoldings] = useState(DEFAULT_HOLDINGS)
   const [newStock, setNewStock] = useState({ bse_code: '', shares: '', avg_cost: '' })
   const [showEducation, setShowEducation] = useState(false)
+  const [portfolioName, setPortfolioName] = useState('')
+  const [selectedPortfolio, setSelectedPortfolio] = useState('')
+  const [showSaveForm, setShowSaveForm] = useState(false)
+  const [showLoadForm, setShowLoadForm] = useState(false)
+
+  // Fetch user's portfolios
+  const { data: portfolios = [] } = useQuery({
+    queryKey: ['portfolios'],
+    queryFn: api.getPortfolios,
+    enabled: !!user
+  })
+
+  // Portfolio CRUD mutations
+  const createPortfolioMutation = useMutation({
+    mutationFn: (portfolio: any) => api.createPortfolio(portfolio),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['portfolios'] })
+      toast.success('Portfolio saved successfully!')
+      setShowSaveDialog(false)
+      setPortfolioName('')
+    },
+    onError: () => {
+      toast.error('Failed to save portfolio')
+    }
+  })
+
+  const loadPortfolioMutation = useMutation({
+    mutationFn: (id: number) => api.getPortfolio(id),
+    onSuccess: (portfolio) => {
+      // Convert portfolio items to holdings format
+      const newHoldings = portfolio.items.map((item: any) => ({
+        bse_code: item.company?.bse_code || item.bse_code,
+        company_name: item.company?.company_name || item.company_name,
+        shares: item.shares,
+        avg_cost: item.avg_cost,
+        esg_score: item.company?.scores?.[0]?.esg_score || 50
+      }))
+      setHoldings(newHoldings)
+      setShowLoadDialog(false)
+      toast.success('Portfolio loaded successfully!')
+    },
+    onError: () => {
+      toast.error('Failed to load portfolio')
+    }
+  })
 
   const { data: analysis, refetch } = useQuery({
     queryKey: ['portfolio-analysis', holdings],
@@ -79,6 +129,47 @@ export default function Portfolio() {
     setHoldings(holdings.filter((_, i) => i !== index))
   }
 
+  const handleSavePortfolio = () => {
+    if (!user) {
+      toast.error('Please log in to save portfolios')
+      return
+    }
+    if (!portfolioName.trim()) {
+      toast.error('Please enter a portfolio name')
+      return
+    }
+    if (holdings.length === 0) {
+      toast.error('Portfolio must contain at least one holding')
+      return
+    }
+
+    const portfolioData = {
+      name: portfolioName.trim(),
+      description: `Portfolio with ${holdings.length} holdings`,
+      items: holdings.map(h => ({
+        bse_code: h.bse_code,
+        shares: h.shares,
+        avg_cost: h.avg_cost
+      }))
+    }
+
+    createPortfolioMutation.mutate(portfolioData)
+  }
+
+  const handleLoadPortfolio = () => {
+    if (!selectedPortfolio) {
+      toast.error('Please select a portfolio to load')
+      return
+    }
+    loadPortfolioMutation.mutate(parseInt(selectedPortfolio))
+  }
+
+  const handleNewPortfolio = () => {
+    setHoldings(DEFAULT_HOLDINGS)
+    setPortfolioName('')
+    toast.success('New portfolio created')
+  }
+
   const monteCarloData = analysis?.monte_carlo?.simulation_data || []
 
   return (
@@ -88,7 +179,83 @@ export default function Portfolio() {
           <h1 className="text-2xl font-bold">Portfolio Simulator</h1>
           <p className="text-muted-foreground">Build and analyze ESG-optimized portfolios</p>
         </div>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleNewPortfolio}>
+            <Plus className="h-4 w-4 mr-2" />
+            New
+          </Button>
+          {user && (
+            <>
+              <Button variant="outline" onClick={() => setShowLoadForm(!showLoadForm)}>
+                <FolderOpen className="h-4 w-4 mr-2" />
+                Load
+              </Button>
+              <Button onClick={() => setShowSaveForm(!showSaveForm)}>
+                <Save className="h-4 w-4 mr-2" />
+                Save
+              </Button>
+            </>
+          )}
+        </div>
       </div>
+
+      {/* Portfolio Management Forms */}
+      {user && (
+        <>
+          {showSaveForm && (
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex gap-4 items-end">
+                  <div className="flex-1">
+                    <label className="text-sm font-medium mb-2 block">Portfolio Name</label>
+                    <Input
+                      value={portfolioName}
+                      onChange={(e) => setPortfolioName(e.target.value)}
+                      placeholder="Enter portfolio name..."
+                    />
+                  </div>
+                  <Button onClick={handleSavePortfolio} disabled={createPortfolioMutation.isPending}>
+                    Save Portfolio
+                  </Button>
+                  <Button variant="outline" onClick={() => setShowSaveForm(false)}>
+                    Cancel
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {showLoadForm && (
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex gap-4 items-end">
+                  <div className="flex-1">
+                    <label className="text-sm font-medium mb-2 block">Select Portfolio</label>
+                    <select
+                      className="w-full p-2 border rounded-md"
+                      value={selectedPortfolio}
+                      onChange={(e) => setSelectedPortfolio(e.target.value)}
+                    >
+                      <option value="">Choose a portfolio...</option>
+                      {portfolios.map((portfolio: any) => (
+                        <option key={portfolio.id} value={portfolio.id.toString()}>
+                          {portfolio.name} ({portfolio.items?.length || 0} holdings)
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <Button onClick={handleLoadPortfolio} disabled={loadPortfolioMutation.isPending}>
+                    Load Portfolio
+                  </Button>
+                  <Button variant="outline" onClick={() => setShowLoadForm(false)}>
+                    Cancel
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </>
+      )}
 
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">

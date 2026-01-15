@@ -1,35 +1,31 @@
 from pydantic_settings import BaseSettings
 from functools import lru_cache
-from typing import Optional
-
 
 class Settings(BaseSettings):
     # Database
-    DATABASE_URL: str = "postgresql+asyncpg://nmysjuoyupfrjrzltafv:qdyxqgsgqcgzxdczubnlnqijklomfc@9qasp5v56q8ckkf5dc.leapcellpool.com:6438/oizdouccekdkjexgquqo?sslmode=require"
+    DATABASE_URL: str
 
     # JWT
-    SECRET_KEY: str = "your-super-secret-key-change-in-production"
-    ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440
+    SECRET_KEY: str
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
 
     # Gemini API
-    GEMINI_API_KEY: str = "AIzaSyD_OoBT2XPAdVP4bicwPzVNMQbU_Onc7mM"
+    GEMINI_API_KEY: str
 
     # CORS
-    FRONTEND_URL: str = "http://localhost:5173"
+    FRONTEND_URL: str
 
     # App Settings
-    DEBUG: bool = True
-    LOG_LEVEL: str = "info"
+    DEBUG: bool
+    LOG_LEVEL: str
 
     class Config:
         env_file = ".env"
         case_sensitive = True
 
-
 @lru_cache()
 def get_settings() -> Settings:
     return Settings()
-
 
 settings = get_settings()

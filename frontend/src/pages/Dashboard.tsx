@@ -1,8 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import Leaderboard from '@/components/Leaderboard'
+import InteractiveMap from '@/components/gis/InteractiveMap'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Globe, Leaf, Users, TrendingUp } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Globe, Leaf, Users, TrendingUp, MapPin, ExternalLink } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 export default function Dashboard() {
 
@@ -11,13 +14,23 @@ export default function Dashboard() {
     queryFn: () => api.getLeaderboard(undefined, 50)
   })
 
+  const { data: stateAggregates } = useQuery({
+    queryKey: ['gis-states'],
+    queryFn: () => api.getGISStates()
+  })
+
+  const { data: companyLocations } = useQuery({
+    queryKey: ['gis-companies'],
+    queryFn: () => api.getGISCompanyLocations()
+  })
+
   const stats = {
     companies: leaderboard?.total || 0,
-    avgESG: leaderboard?.data 
+    avgESG: leaderboard?.data
       ? Math.round(leaderboard.data.reduce((acc: number, c: any) => acc + (c.esg_score || 0), 0) / leaderboard.data.length)
       : 0,
-    highESG: leaderboard?.data 
-      ? leaderboard.data.filter((c: any) => (c.esg_score || 0) >= 70).length 
+    highESG: leaderboard?.data
+      ? leaderboard.data.filter((c: any) => (c.esg_score || 0) >= 70).length
       : 0,
     avgOutperformance: leaderboard?.data
       ? (leaderboard.data.reduce((acc: number, c: any) => acc + (c.benchmark_vs_nifty50 || 0), 0) / (leaderboard.data.length || 1)).toFixed(1)
@@ -60,14 +73,43 @@ export default function Dashboard() {
         ))}
       </div>
 
-      <Card>
-        <CardHeader className="pb-3 md:pb-4">
-          <CardTitle className="text-lg md:text-xl">All Companies</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <Leaderboard />
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* ESG Map Overview */}
+        <Card className="lg:col-span-1">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <MapPin className="h-5 w-5" />
+                ESG Map
+              </CardTitle>
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/geographic" className="flex items-center gap-1">
+                  <ExternalLink className="h-4 w-4" />
+                  <span className="hidden sm:inline">View Full</span>
+                </Link>
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <InteractiveMap
+              companies={companyLocations || []}
+              stateAggregates={stateAggregates || []}
+              height="300px"
+              showHeatmap={true}
+            />
+          </CardContent>
+        </Card>
+
+        {/* Leaderboard */}
+        <Card className="lg:col-span-2 px-5">
+          <CardHeader className="pb-3 md:pb-4">
+            <CardTitle className="text-lg md:text-xl">All Companies</CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <Leaderboard />
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

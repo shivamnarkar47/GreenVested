@@ -5,9 +5,10 @@ import { ThemeProvider } from '@/context/ThemeContext'
 import Layout from '@/components/Layout'
 import Landing from '@/pages/Landing'
 import Dashboard from '@/pages/Dashboard'
+import GeographicDashboard from '@/pages/GeographicDashboard'
 import Company from '@/pages/Company'
 import Portfolio from '@/pages/Portfolio'
-import AuthPage from '@/pages/AuthPage'
+// import AuthPage from '@/pages/AuthPage'
 import { LoadingScreen } from '@/components/LoadingScreen'
 import { useState, useEffect } from 'react'
 
@@ -44,9 +45,10 @@ function App() {
               <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/geographic" element={<GeographicDashboard />} />
                 <Route path="/company/:bseCode" element={<Company />} />
                 <Route path="/portfolio" element={<Portfolio />} />
-                <Route path="/auth" element={<AuthPage />} />
+                {/* <Route path="/auth" element={<AuthPage />} /> */}
               </Routes>
             </Layout>
           </BrowserRouter>
