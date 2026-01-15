@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { MonteCarloChart } from '@/components/Charts'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
 import { Plus, Trash2, TrendingUp, RefreshCw, AlertCircle, ChevronDown, ChevronUp, BookOpen, Save, FolderOpen } from 'lucide-react'
+import { toast } from 'sonner'
 
 const COLORS = ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b']
 
@@ -68,7 +69,7 @@ export default function Portfolio() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['portfolios'] })
       toast.success('Portfolio saved successfully!')
-      setShowSaveDialog(false)
+      setShowSaveForm(false)
       setPortfolioName('')
     },
     onError: () => {
@@ -88,7 +89,7 @@ export default function Portfolio() {
         esg_score: item.company?.scores?.[0]?.esg_score || 50
       }))
       setHoldings(newHoldings)
-      setShowLoadDialog(false)
+      setShowLoadForm(false)
       toast.success('Portfolio loaded successfully!')
     },
     onError: () => {

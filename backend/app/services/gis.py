@@ -44,7 +44,9 @@ class GISService:
         """Get ESG aggregates by state"""
         # Get all companies with ESG scores
         companies = (
-            db.execute(select(Company).where(Company.state.isnot(None))).scalars().all()
+            db.execute(select(Company).where(Company.state.is_not(None)))
+            .scalars()
+            .all()
         )
 
         state_data = {}

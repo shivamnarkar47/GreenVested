@@ -6,6 +6,26 @@ import { Badge } from '@/components/ui/badge'
 import { MapPin, Globe, TrendingUp, Award } from 'lucide-react'
 import { useState } from 'react'
 
+interface StateAggregate {
+  state: string
+  company_count: number
+  avg_esg_score: number
+  avg_e_score: number
+  avg_s_score: number
+  avg_g_score: number
+  top_company?: string
+  lowest_company?: string
+}
+
+interface RegionalComparison {
+  state: string
+  esg_score: number
+  national_avg: number
+  deviation: number
+  rank: number
+  total_states: number
+}
+
 export default function GeographicDashboard() {
   const [selectedState, setSelectedState] = useState<string | undefined>()
 
@@ -24,7 +44,7 @@ export default function GeographicDashboard() {
     queryFn: () => api.getGISRegionalComparison()
   })
 
-  const selectedStateData = stateAggregates?.find(s => s.state === selectedState)
+  const selectedStateData = stateAggregates?.find((s: StateAggregate) => s.state === selectedState)
 
   const stats = {
     statesCovered: stateAggregates?.length || 0,
@@ -150,7 +170,7 @@ export default function GeographicDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3 max-h-96 overflow-y-auto">
-                {regionalComparison?.slice(0, 10).map((state, index) => (
+                {regionalComparison?.slice(0, 10).map((state: RegionalComparison) => (
                   <div
                     key={state.state}
                     className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors ${

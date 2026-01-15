@@ -41,48 +41,46 @@ interface InteractiveMapProps {
   showHeatmap?: boolean;
 }
 
-// Custom hook to fit map bounds
-function FitBounds({ companies }: { companies: CompanyLocation[] }) {
-  const map = useMap();
-
-  useEffect(() => {
-    if (companies.length > 0) {
-      const bounds = L.latLngBounds(
-        companies.map(company => [company.latitude, company.longitude])
-      );
-      map.fitBounds(bounds, { padding: [20, 20] });
-    }
-  }, [companies, map]);
-
-  return null;
-}
-
-// Get color based on ESG score
-function getESGColor(score: number): string {
-  if (score >= 80) return '#22c55e'; // green-500
-  if (score >= 70) return '#84cc16'; // lime-500
-  if (score >= 60) return '#eab308'; // yellow-500
-  if (score >= 50) return '#f97316'; // orange-500
-  return '#ef4444'; // red-500
-}
-
-// Get circle radius based on company count or ESG score
-function getCircleRadius(count: number, score: number): number {
-  return Math.max(50000, Math.min(200000, count * 10000 + score * 1000));
-}
-
-
-
+// Remove unused variables
 const InteractiveMap: React.FC<InteractiveMapProps> = ({
   companies = [],
   stateAggregates = [],
-  selectedState,
   onStateClick,
   height = "100vh",
   showHeatmap = true
 }) => {
-  const [mapCenter, setMapCenter] = useState<[number, number]>([20.5937, 78.9629]); // Center of India
-  const [mapZoom, setMapZoom] = useState(5);
+  const [mapCenter] = useState<[number, number]>([20.5937, 78.9629]); // Center of India
+  const [mapZoom] = useState(5);
+
+  // Custom hook to fit map bounds
+  function FitBounds({ companies }: { companies: CompanyLocation[] }) {
+    const map = useMap();
+
+    useEffect(() => {
+      if (companies.length > 0) {
+        const bounds = L.latLngBounds(
+          companies.map(company => [company.latitude, company.longitude])
+        );
+        map.fitBounds(bounds, { padding: [20, 20] });
+      }
+    }, [companies, map]);
+
+    return null;
+  }
+
+  // Get color based on ESG score
+  function getESGColor(score: number): string {
+    if (score >= 80) return '#22c55e'; // green-500
+    if (score >= 70) return '#84cc16'; // lime-500
+    if (score >= 60) return '#eab308'; // yellow-500
+    if (score >= 50) return '#f97316'; // orange-500
+    return '#ef4444'; // red-500
+  }
+
+  // Get circle radius based on company count or ESG score
+  function getCircleRadius(count: number, score: number): number {
+    return Math.max(50000, Math.min(200000, count * 10000 + score * 1000));
+  }
 
   // State coordinates for heatmap
   const stateCoordinates: Record<string, [number, number]> = {

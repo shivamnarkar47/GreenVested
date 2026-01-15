@@ -2,6 +2,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from sqlalchemy.pool import QueuePool
 from urllib.parse import urlparse, parse_qs
+from typing import Generator
 from app.config import settings
 
 DATABASE_URL = settings.DATABASE_URL
@@ -36,7 +37,7 @@ SyncSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=sync_eng
 Base = declarative_base()
 
 
-def get_db() -> Session:
+def get_db() -> Generator[Session, None, None]:
     db = SyncSessionLocal()
     try:
         yield db
